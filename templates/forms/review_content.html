@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Review Your Documents</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .form-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background-color: #0056b3;
+      }
+      .messages {
+        margin: 20px 0;
+      }
+      .alert {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+      }
+      .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Review Your Generated Documents</h1>
+
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" id="reviewForm">
+      {% csrf_token %}
+
+      <div class="form-section">
+        <h2>Resume</h2>
+        <p>Review and edit your resume content below:</p>
+        <textarea name="resume_content" rows="30" cols="80" class="form-control">{{ resume_content }}</textarea>
+      </div>
+
+      <!-- download pdf button -->
+      <div style="margin-top: 20px">
+        <a href="{% url 'resume_pdf_download' %}" target="_blank" class="btn">Download Resume PDF</a>
+      </div>
+
+      {% if cover_letter_content %}
+      <div class="form-section">
+        <h2>Cover Letter</h2>
+        <p>Review and edit your cover letter content below:</p>
+        <textarea name="cover_letter_content" rows="30" cols="80" class="form-control">
+{{ cover_letter_content }}</textarea
+        >
+      </div>
+      {% endif %}
+
+      <div style="margin-top: 20px">
+        {% if cover_letter_content %}
+        <a href="{% url 'cover_letter_pdf_download' %}" target="_blank" class="btn" style="margin-left: 10px"
+          >Download Cover Letter PDF</a
+        >
+        {% endif %}
+        <a href="{% url 'build_resume' %}" style="margin-left: 10px">← Back to Form</a>
+      </div>
+    </form>
+  </body>
+</html>
