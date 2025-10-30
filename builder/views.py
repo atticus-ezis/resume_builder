@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from .forms import JodDescriptionForm 
 from .services import OpenAIService, markdown_to_pdf
+from datetime import datetime
 
 
 # Create your views here.
@@ -12,6 +13,10 @@ def build_resume(request):
         if form.is_valid():
             job_data = form.cleaned_data
             include_cover_letter = job_data.get('include_cover_letter', False)
+
+            if include_cover_letter:
+                job_data['date'] = datetime.now().strftime('%Y-%m-%d')
+
             ai_service = OpenAIService()
             ai_response = ai_service.execute_generate(job_data, include_cover_letter=include_cover_letter)
 
@@ -36,7 +41,7 @@ def build_resume(request):
 def resume_pdf_download(request):
     resume_content = request.session.get('resume_content', None)
     if resume_content:
-        resume_pdf, message = markdown_to_pdf(resume_content, filename='Atticus Ezis Resume', request=request)
+        resume_pdf, message = markdown_to_pdf(resume_content, filename='Atticus Ezis Resume.pdf', request=request)
         print(message)
         return resume_pdf
     else:
@@ -46,7 +51,7 @@ def resume_pdf_download(request):
 def cover_letter_pdf_download(request):
     cover_letter_content = request.session.get('cover_letter_content', None)
     if cover_letter_content:
-        cover_letter_pdf, message = markdown_to_pdf(cover_letter_content, filename='Atticus EzisCover Letter', request=request)
+        cover_letter_pdf, message = markdown_to_pdf(cover_letter_content, filename='Atticus Ezis Cover Letter.pdf', request=request)
         print(message)
         return cover_letter_pdf
     else:

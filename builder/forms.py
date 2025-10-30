@@ -6,7 +6,7 @@ class JodDescriptionForm(forms.Form):
     hiring_manager_name = forms.CharField(label='Hiring Manager Name', max_length=100, required=False)
     company_description = forms.CharField(
         label='Company Description', 
-        max_length=1000,
+        max_length=5000,
         widget=forms.Textarea(
             attrs={
                 'rows': 10, 
@@ -17,7 +17,7 @@ class JodDescriptionForm(forms.Form):
     )
     job_description = forms.CharField(
         label='Job Responsibilities',
-        max_length=1000,
+        max_length=5000,
         widget=forms.Textarea(
             attrs={
                 'rows': 20, 
@@ -28,7 +28,7 @@ class JodDescriptionForm(forms.Form):
     )
     desired_experience = forms.CharField(
         label='Job Requirements',
-        max_length=1000,
+        max_length=5000,
         widget=forms.Textarea(
             attrs={
                 'rows': 20, 
