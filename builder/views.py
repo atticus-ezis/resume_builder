@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
-from .forms import JodDescriptionForm, ResumeReviewForm, CoverLetterReviewForm
-from .services import OpenAIService, download_resume_pdf
+from .forms import JodDescriptionForm 
+from .services import OpenAIService, markdown_to_pdf
 
 
 # Create your views here.
@@ -36,7 +36,8 @@ def build_resume(request):
 def resume_pdf_download(request):
     resume_content = request.session.get('resume_content', None)
     if resume_content:
-        resume_pdf = download_resume_pdf(resume_content, output_path='Atticus_Ezis_Resume.pdf')
+        resume_pdf, message = markdown_to_pdf(resume_content, filename='Atticus Ezis Resume', request=request)
+        print(message)
         return resume_pdf
     else:
         messages.error(request, 'No resume content found.')
@@ -45,7 +46,8 @@ def resume_pdf_download(request):
 def cover_letter_pdf_download(request):
     cover_letter_content = request.session.get('cover_letter_content', None)
     if cover_letter_content:
-        cover_letter_pdf = download_resume_pdf(cover_letter_content, output_path='Atticus_Ezis_Cover_Letter.pdf')
+        cover_letter_pdf, message = markdown_to_pdf(cover_letter_content, filename='Atticus EzisCover Letter', request=request)
+        print(message)
         return cover_letter_pdf
     else:
         messages.error(request, 'No cover letter content found.')

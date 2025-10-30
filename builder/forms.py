@@ -3,7 +3,7 @@ from django import forms
 class JodDescriptionForm(forms.Form):
     company_name = forms.CharField(label='Company Name', max_length=100)
     address = forms.CharField(label='Company Address', max_length=100)
-    hiring_manager_name = forms.CharField(label='Hiring Manager Name', max_length=100)
+    hiring_manager_name = forms.CharField(label='Hiring Manager Name', max_length=100, required=False)
     company_description = forms.CharField(
         label='Company Description', 
         max_length=1000,
@@ -40,27 +40,27 @@ class JodDescriptionForm(forms.Form):
     include_cover_letter = forms.BooleanField(label='Include Cover Letter', required=False)
 
 
-class ResumeReviewForm(forms.Form):
-    content = forms.CharField(
-        label='Resume Content',
-        widget=forms.Textarea(
-            attrs={
-                'rows': 30,
-                'cols': 80,
-                'class': 'form-control'
-            }
-        )
-    )
+# class ResumeReviewForm(forms.Form):
+#     content = forms.CharField(
+#         label='Resume Content',
+#         widget=forms.Textarea(
+#             attrs={
+#                 'rows': 30,
+#                 'cols': 80,
+#                 'class': 'form-control'
+#             }
+#         )
+#     )
 
 
-class CoverLetterReviewForm(forms.Form):
-    content = forms.CharField(
-        label='Cover Letter Content',
-        widget=forms.Textarea(
-            attrs={
-                'rows': 25,
-                'cols': 80,
-                'class': 'form-control'
-            }
-        )
-    )
+# class CoverLetterReviewForm(forms.Form):
+#     content = forms.CharField(
+#         label='Cover Letter Content',
+#         widget=forms.Textarea(
+#             attrs={
+#                 'rows': 25,
+#                 'cols': 80,
+#                 'class': 'form-control'
+#             }
+#         )
+#     )
