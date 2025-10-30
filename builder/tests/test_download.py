@@ -87,8 +87,8 @@ Motivated and detail-oriented Graduate Software Engineer.
 
 This resume is structured to highlight relevant experiences and skills aligned with the Graduate Software Engineer role at Acceler8 Talent, ensuring clarity and ATS-friendliness for optimal PDF export."""
         
-        markdown_only, message = remove_summary(md_with_summary)
-        response, message = markdown_to_pdf(ai_response=markdown_only, filename="test.pdf")
+        markdown_only, _ = remove_summary(md_with_summary)
+        response, _ = markdown_to_pdf(ai_response=markdown_only, filename="test.pdf")
         pdf_content = response.content
         
         # Validate PDF structure
@@ -114,6 +114,43 @@ This resume is structured to highlight relevant experiences and skills aligned w
                 "Name should be in PDF"
             assert "Python" in pdf_text or "python" in pdf_text.lower(), \
                 "Skills should be in PDF"
+
+    def test_remove_summary_removes_code_fences(self):
+        """Test that remove_summary removes code fences if present."""
+        # Test case 1: Markdown wrapped in code fences
+        text_with_fences = """```markdown
+# Atticus Ezis
+## Objective
+Motivated software engineer
+```"""
+        
+        markdown_only, message = remove_summary(text_with_fences)
+        assert "```" not in markdown_only, "Code fences should be removed"
+        assert "# Atticus Ezis" in markdown_only, "Content should remain"
+        assert "markdown" not in markdown_only, "Language specifier should be removed"
+        
+        # Test case 2: Markdown without fences
+        text_without_fences = """# Atticus Ezis
+## Objective
+Motivated software engineer"""
+        
+        markdown_only, message = remove_summary(text_without_fences)
+        assert "```" not in markdown_only, "No code fences should be added"
+        assert "# Atticus Ezis" in markdown_only, "Content should remain"
+        
+        # Test case 3: Markdown with fences and summary
+        text_with_fences_and_summary = """```markdown
+# Atticus Ezis
+## Skills
+- Python
+
+This resume is structured to highlight relevant experiences and skills."""
+        
+        markdown_only, message = remove_summary(text_with_fences_and_summary)
+        assert "```" not in markdown_only, "Code fences should be removed"
+        assert "This resume is structured" not in markdown_only, "Summary should be removed"
+        assert "# Atticus Ezis" in markdown_only, "Content should remain"
+        assert "Python" in markdown_only, "Skills should remain"
 
 
 

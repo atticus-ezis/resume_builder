@@ -4,6 +4,7 @@ class JodDescriptionForm(forms.Form):
     company_name = forms.CharField(label='Company Name', max_length=100)
     address = forms.CharField(label='Company Address', max_length=100)
     hiring_manager_name = forms.CharField(label='Hiring Manager Name', max_length=100, required=False)
+    job_title = forms.CharField(label='Job Title', max_length=100)
     company_description = forms.CharField(
         label='Company Description', 
         max_length=5000,

@@ -22,6 +22,19 @@ def remove_summary(ai_response):
     markdown_text = ai_response.strip()
     message = ""
     
+    # Remove code fences if present (```markdown at start, ``` at end)
+    if markdown_text.startswith("```"):
+        # Find first newline after opening fence
+        first_newline = markdown_text.find("\n")
+        if first_newline != -1:
+            markdown_text = markdown_text[first_newline+1:]
+    if markdown_text.endswith("```"):
+        last_newline = markdown_text.rfind("\n")
+        if last_newline != -1:
+            markdown_text = markdown_text[:last_newline]
+    
+    markdown_text = markdown_text.strip()
+    
     for delimiter in summary_delimiters:
         if delimiter in markdown_text:
             parts = markdown_text.split(delimiter)
@@ -131,7 +144,8 @@ class OpenAIService:
             f"- {resume_or_cover_letter.title()} tailored to the job.\n"
             "- Do not invent qualifications or experience not present in the details.\n"
             "- Return as Markdown or plain text for clean export.\n"
-            "- Do not add summaries, notes, or any meta commentary."
+            "- Do not add summaries, notes, or any meta commentary.\n"
+            "- IMPORTANT: Do NOT wrap your response in code fences (triple backticks ```). Return the raw Markdown content only."
         )
 
         return role_description, prompt
