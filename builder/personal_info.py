@@ -10,8 +10,8 @@ experiences = [
         "summary": (
             "Developed the accounting software for Rizal Memorial Colleges Inc."
             "Designed REST API endpoints using Django REST Framework."
-            "Collaborated in Agile workflows. Participated in bi-weekly Sprints, Daily Stand-ups, Backlog Grooming and Retrospectives."
-            "reviews to ensure best practices."
+            "Collaborated in Agile workflows. Participated in bi-weekly Sprints, Daily Stand-ups, Backlog Grooming and Retrospectives "
+            "using slack, discord, and github for communication and project management."
             "integrated tests, CI/CD, and deployment workflows."
             "collaborated closely with frontend developers."
         ),
@@ -71,36 +71,33 @@ experiences = [
     }
 ]
 
-projects = [
-    
-    {
-        "Portfolio with AI Chat": [
-            {
-                "Tech Stack": ["Next.js", "Tailwind CSS", "TypeScript", "React", "Git", "GitHub Actions", "AI", "RAG"]
-            },
-            {
-                "Description": (
-                    "I created a full stack application with Next.js. The site uses a RAG powered AI chatbot to answer questions about my experiences and projects"
-                    "to mock personal interviews."
-                )
-            },
-        ]
-    },
-    {
-        "Blogsforthecriminallyinsane": [
-            {
-                "Tech Stack": ["Django", "AWS"]
-            },
-            {
-                "Description": (
-                    "I created a full stack application with Django."
-                    "Used a custom custom domain, was SSL certified, and hosted on AWS through Elastic Beanstalk."
-                    "configured Ec2 instance to run the application and database using Bash."
-                )
-            }
-        ]
-    }
-]
+projects = {
+    "Portfolio with AI Chat": [
+        {
+            "Tech Stack": ["Next.js", "TypeScript", "Tailwind CSS", "React", "GitHub Actions", "Vercel", "RAG", "AI"]
+        },
+        {
+            "Description": (
+                "Developed a full stack portfolio application using Next.js and TypeScript, deployed on Vercel."
+                "Integrated a Retrieval-Augmented Generation (RAG) AI chatbot trained on my professional experiences "
+                "to simulate mock interviews and answer career-related questions."
+            )
+        }
+    ],
+    "Django Blog": [
+        {
+            "Tech Stack": ["Django", "AWS", "EC2", "Elastic Beanstalk", "PostgreSQL", "Bash"]
+        },
+        {
+            "Description": (
+                "Built and deployed a full stack Django web application hosted on AWS Elastic Beanstalk with a custom domain and SSL certification."
+                "Configured EC2 instances and PostgreSQL database via Bash scripts to automate deployment and manage backend services."
+            )
+        }
+    ]
+}
+
+
 
 my_personal_info = {
     "name": "Atticus Ezis",
@@ -120,19 +117,29 @@ my_personal_info = {
     },
     "experience": experiences,
     "projects": projects,
-    "education": [
-        "Bachelor of Science in Business Administration", 
-        "University of Colorado Boulder", 
-        {
-            "Relevant Courses": ["Intro to Python", "Computer Data Science and Analytics", "Digital Marketing", "Calculus 2" ]
-        },
-        {
-            "Accomplishments": [
-                "Voted Project Leader for entreprenuership Captstone Project. Designed and picthed a business plan for a cottage industry online marketplace.",
-                "Alteryx Core Certified, a corporate sponsored certification by Alteryx Inc. Demonstrating storng analytical thinking and data analysis skills."
-            ]
-        },
-    ],
+    "education": {
+        "degree": "Bachelor of Science in Business Administration",
+        "university": "University of Colorado Boulder",
+        "Relevant Courses": ["Intro to Python", "Computer Data Science and Analytics", "Digital Marketing", "Calculus 2"],
+        "Accomplishments": [
+            "Project Leader, Entrepreneurship Capstone — Led a team to design and pitch a business plan for an online marketplace, demonstrating leadership and cross-functional collaboration.",
+            "Alteryx Core Certified — Corporate-sponsored certification by Alteryx Inc., validating strong analytical, data processing, and problem-solving skills."
+        ]
+    },
+
+
+    "certifications": [
+        "Responsive Web Design (freeCodeCamp) - Designed product landing page.",
+        "JavaScript Algorithms and Data Structures (freeCodeCamp) - Built RPG game and Pokémon search engine.",
+        "Databases and SQL for Python (IBM) - Analyzed graduation rates of Chicago Public Schools using Excel.",
+        "Python for Data Science, AI & Development (IBM) - Automated public data collection with web-scrapping.",
+        "Alteryx Core Certified, (Alteryx Inc) - Validates proficiency in data preparation, workflow automation, and analytical problem-solving.",
+        ["Certified LLM Developer Course (TowardsAI) - provides the core technical stack for building production-grade generative AI applications, "
+        "including mastery of Prompt Engineering, integrating RAG (Retrieval-Augmented Generation) with tools like LlamaIndex, "
+        "and implementing Fine-Tuning techniques across leading models such as Gemini, Llama, and OpenAI. Crucially, "
+        "the course emphasizes LLM Evaluation by teaching how to rigorously test and validate application outputs based on key metrics like "
+        "Relevance, Coherence, and Grounded-ness to ensure high-quality, trustworthy performance.", {"status": "In Progress"}],
+    ]
        
 }
 

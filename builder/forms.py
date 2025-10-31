@@ -2,9 +2,10 @@ from django import forms
 
 class JodDescriptionForm(forms.Form):
     company_name = forms.CharField(label='Company Name', max_length=100)
-    address = forms.CharField(label='Company Address', max_length=100)
+    job_title = forms.CharField(label='Job Title', max_length=100, required=False)
+    address = forms.CharField(label='Company Address', max_length=100, required=False)
     hiring_manager_name = forms.CharField(label='Hiring Manager Name', max_length=100, required=False)
-    job_title = forms.CharField(label='Job Title', max_length=100)
+
     company_description = forms.CharField(
         label='Company Description', 
         max_length=5000,
@@ -28,7 +29,7 @@ class JodDescriptionForm(forms.Form):
         )
     )
     desired_experience = forms.CharField(
-        label='Job Requirements',
+        label='Desired Experience',
         max_length=5000,
         widget=forms.Textarea(
             attrs={
@@ -39,6 +40,18 @@ class JodDescriptionForm(forms.Form):
         )
     )
     include_cover_letter = forms.BooleanField(label='Include Cover Letter', required=False)
+    personal_info_specific_to_job = forms.CharField(
+        label='Added Personal Info', 
+        required=False,
+        max_length=5000,
+        widget=forms.Textarea(
+            attrs={
+                'rows': 20, 
+                'cols': 50, 
+                'placeholder': 'Enter the personal info specific to the job here'
+            }
+        )
+    )
 
 
 # class ResumeReviewForm(forms.Form):
