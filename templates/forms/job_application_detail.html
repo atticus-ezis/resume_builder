@@ -1,0 +1,14 @@
+<h1>{{ job_application.company_name }}</h1>
+
+<p><strong>Created:</strong> {{ job_application.created_at|date:"M j, Y, g:i A" }}</p>
+<p><strong>Updated:</strong> {{ job_application.updated_at|date:"M j, Y, g:i A" }}</p>
+
+{% if job_application.content %}
+<h2>Resume</h2>
+<div>{{ job_application.content|linebreaksbr }}</div>
+{% endif %} {% if job_application.cover_letter_content %}
+<h2>Cover Letter</h2>
+<div>{{ job_application.cover_letter_content|linebreaksbr }}</div>
+{% endif %}
+
+<p><a href="{% url 'view_job_applications' %}">← Back to applications</a></p>

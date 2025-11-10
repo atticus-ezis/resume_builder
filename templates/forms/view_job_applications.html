@@ -1,0 +1,22 @@
+<h1>Search Job Applications</h1>
+<form method="get">
+  {{ form.as_p }}
+  <button type="submit">Search</button>
+  {% if request.GET.company_name %}
+  <a href="{% url 'view_job_applications' %}">Clear</a>
+  {% endif %}
+</form>
+
+<h2>Job Applications</h2>
+{% if job_applications %}
+<ul>
+  {% for job_application in job_applications %}
+  <li>
+    <a href="{% url 'job_application_detail' job_application.id %}"> {{ job_application.company_name }} </a>
+    <small>· {{ job_application.created_at|date:"M j, Y" }}</small>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No job applications found.</p>
+{% endif %}

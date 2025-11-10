@@ -5,36 +5,38 @@ from .personal_info import my_personal_info
 import markdown
 from weasyprint import HTML
 from django.http import HttpResponse
+from .models import JobApplication
 
 
 load_dotenv()
 
-api_key = os.getenv('API_KEY')
+api_key = os.getenv("API_KEY")
+
 
 def remove_summary(ai_response):
     summary_delimiters = [
         "This resume is structured to highlight",
-        "This cover letter is structured to highlight", 
+        "This cover letter is structured to highlight",
         "The resume is optimized for",
         "The cover letter is optimized for",
     ]
 
     markdown_text = ai_response.strip()
     message = ""
-    
+
     # Remove code fences if present (```markdown at start, ``` at end)
     if markdown_text.startswith("```"):
         # Find first newline after opening fence
         first_newline = markdown_text.find("\n")
         if first_newline != -1:
-            markdown_text = markdown_text[first_newline+1:]
+            markdown_text = markdown_text[first_newline + 1 :]
     if markdown_text.endswith("```"):
         last_newline = markdown_text.rfind("\n")
         if last_newline != -1:
             markdown_text = markdown_text[:last_newline]
-    
+
     markdown_text = markdown_text.strip()
-    
+
     for delimiter in summary_delimiters:
         if delimiter in markdown_text:
             parts = markdown_text.split(delimiter)
@@ -44,7 +46,7 @@ def remove_summary(ai_response):
             break
 
     return markdown_text, message
-    
+
 
 def markdown_to_pdf(ai_response, filename="Atticus Ezis Resume.pdf", request=None):
     # 1) Markdown → HTML
@@ -85,14 +87,14 @@ def markdown_to_pdf(ai_response, filename="Atticus Ezis Resume.pdf", request=Non
     return resp, message
 
 
-
 class OpenAIService:
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv('API_KEY'))
+        self.client = OpenAI(api_key=os.getenv("API_KEY"))
         self.model = "gpt-4o-mini"
         self.section_order = (
             "=== SECTION ORDER (MUST FOLLOW EXACTLY) ===\n"
-            "1) Header (Name • US Citizen • City, ST • Email • LinkedIn • GitHub • Portfolio)\n"
+            "Clearly seperate each section with Bold headers."
+            "1) A two-line Header where candidate's name is bolded and displayed on its own line above the following details: (US Citizen • City, ST • Email • LinkedIn • GitHub • Portfolio)\n"
             "2) Professional Summary (2–3 lines):\n"
             "   - State the applicant's core strengths and how they match the job requirements.\n"
             "   - If a desired tech experience is missing from the applicant, show how it complemetns their existing stack and express a desire to learn it.\n"
@@ -106,54 +108,61 @@ class OpenAIService:
             "6) Certifications (only list if they're relevant to the job requirements)\n"
         )
 
-
     def job_description_info(self, data):
         response = {
-            'company_name': data.get('company_name'),
-            'address': data.get('address'),
-            'hiring_manager_name': data.get('hiring_manager_name'),
-            'company_description': data.get('company_description'),
-            'job_description': data.get('job_description'),
-            'desired_experience': data.get('desired_experience'),
-            'date_applied': data.get('date'),
+            "company_name": data.get("company_name"),
+            "address": data.get("address"),
+            "hiring_manager_name": data.get("hiring_manager_name")
+            or (
+                f"{data.get('company_name', '')} Hiring Team"
+                if data.get("company_name")
+                else None
+            ),
+            "company_description": data.get("company_description"),
+            "job_description": data.get("job_description"),
+            "desired_experience": data.get("desired_experience"),
+            "date_applied": data.get("date"),
             # additional personal info
-            'added_personal_info': data.get('personal_info_specific_to_job'),
+            "added_personal_info": data.get("personal_info_specific_to_job"),
         }
         return {key: value for key, value in response.items() if value is not None}
 
     def personal_info(self, added_personal_info=None):
         if added_personal_info:
-            my_personal_info['personal_info_job_specific'] = added_personal_info
+            my_personal_info["personal_info_job_specific"] = added_personal_info
         return my_personal_info
 
-    
-    def generate_role_and_prompt(self, job_description, personal_info, resume_or_cover_letter='resume', content_type='Markdown'):
+    def generate_role_and_prompt(
+        self,
+        job_description,
+        personal_info,
+        resume_or_cover_letter="resume",
+        content_type="Markdown",
+    ):
         role_description = (
             f"You are a professional {resume_or_cover_letter} formatter. "
             f"Ensure factual accuracy, a confident tone, and clean, ATS-friendly {content_type} formatting. "
             "Keep sections clearly labeled and separated. "
             "\n=== IMPORTANT ===\n"
             "Return only the transformed content — no summaries, commentary, or extra text. "
-            "If information is missing (like hiring manager name or date), "
-            "don't include placeholders like [Hiring Manager Name] or [Date]. "
+            "don't include placeholders like '[Hiring Manager Name]' or '[Date]' for missing information. "
             "Simply omit those elements from the output.\n"
         )
         include_section_order = False
-        
+
         # Build prompt with cover letter specific instructions if needed
-        if resume_or_cover_letter.lower() == 'resume':
+        if resume_or_cover_letter.lower() == "resume":
             missing_info_instructions = (
                 "Include US Citizenship status at the top of the document.\n"
             )
             include_section_order = True
         else:
-            date_applied = job_description.get('date_applied')
-            if date_applied:
-                missing_info_instructions = f"For the date use {date_applied}. Do not simply use [Date]."
-            else:
-                missing_info_instructions = "do not include [Date] if not provided"
+            missing_info_instructions = (
+                f"Address the hiring manager as '{job_description.get('hiring_manager_name')}' not 'Hiring Manager'. "
+                f"For the date use '{job_description.get('date_applied')}' not '[Date]'. "
+            )
 
-        if content_type.lower() == 'markdown':
+        if content_type.lower() == "markdown":
             formatting_instructions = (
                 "- For nested lists, use EXACTLY 4 spaces for indentation (not 2). Example:\n"
                 "  - **Main Item:**\n"
@@ -165,7 +174,7 @@ class OpenAIService:
                 "- Place all content inside the <body> tags.\n"
                 "- Ignore header and styles.\n"
             )
-        
+
         prompt = (
             f"Return a {resume_or_cover_letter} optimized for PDF export. "
             "Content must be ATS-friendly, concise, and persuasive. "
@@ -186,7 +195,6 @@ class OpenAIService:
             f"- IMPORTANT: Do NOT wrap your response in code fences (triple backticks ```). Return the raw {content_type} content only.\n"
             f"{formatting_instructions}"
             f"{self.section_order if include_section_order else ''}\n"
-
         )
 
         return role_description, prompt
@@ -197,7 +205,7 @@ class OpenAIService:
                 model=self.model,
                 messages=[
                     {"role": "system", "content": role_description},
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt},
                 ],
                 temperature=0.5,
                 max_tokens=4000,
@@ -206,25 +214,56 @@ class OpenAIService:
         except Exception as e:
             print(e)
             return None
-    
+
     def execute_generate(self, job_data, include_cover_letter=False):
         job_description_info = self.job_description_info(job_data)
-        added_personal_info = job_description_info.get('added_personal_info')
+        added_personal_info = job_description_info.get("added_personal_info")
         personal_info = self.personal_info(added_personal_info)
 
-        role_description, prompt = self.generate_role_and_prompt(job_description_info, personal_info, resume_or_cover_letter='resume')
+        role_description, prompt = self.generate_role_and_prompt(
+            job_description_info, personal_info, resume_or_cover_letter="resume"
+        )
         resume_response = self.api_call(role_description, prompt)
 
-        response = {
-            'resume': resume_response
-        }
-        
+        response = {"resume": resume_response}
+
         if include_cover_letter:
-            role_description, prompt = self.generate_role_and_prompt(job_description_info, personal_info, resume_or_cover_letter='cover letter')
+            role_description, prompt = self.generate_role_and_prompt(
+                job_description_info,
+                personal_info,
+                resume_or_cover_letter="cover letter",
+            )
             cover_letter_response = self.api_call(role_description, prompt)
-            response['cover_letter'] = cover_letter_response
+            response["cover_letter"] = cover_letter_response
 
         return response
 
 
-    
+def create_job_app_resume(company_name, app_id, resume_content):
+    if app_id:
+        try:
+            job_application = JobApplication.objects.get(pk=app_id)
+        except JobApplication.DoesNotExist:
+            job_application = JobApplication(company_name=company_name)
+    else:
+        job_application, _ = JobApplication.objects.get_or_create(
+            company_name=company_name
+        )
+    job_application.content = resume_content
+    job_application.save()
+    return job_application.id
+
+
+def create_job_app_cover_letter(company_name, app_id, cover_letter_content):
+    if app_id:
+        try:
+            job_application = JobApplication.objects.get(pk=app_id)
+        except JobApplication.DoesNotExist:
+            job_application = JobApplication(company_name=company_name)
+    else:
+        job_application, _ = JobApplication.objects.get_or_create(
+            company_name=company_name
+        )
+    job_application.cover_letter_content = cover_letter_content
+    job_application.save()
+    return job_application.id

@@ -1,57 +1,71 @@
 from django import forms
 
+
 class JodDescriptionForm(forms.Form):
-    company_name = forms.CharField(label='Company Name', max_length=100)
-    job_title = forms.CharField(label='Job Title', max_length=100, required=False)
-    address = forms.CharField(label='Company Address', max_length=100, required=False)
-    hiring_manager_name = forms.CharField(label='Hiring Manager Name', max_length=100, required=False)
+    company_name = forms.CharField(label="Company Name", max_length=100)
+    job_title = forms.CharField(label="Job Title", max_length=100, required=False)
+    address = forms.CharField(label="Company Address", max_length=100, required=False)
+    hiring_manager_name = forms.CharField(
+        label="Hiring Manager Name", max_length=100, required=False
+    )
 
     company_description = forms.CharField(
-        label='Company Description', 
+        label="Company Description",
         max_length=5000,
         widget=forms.Textarea(
             attrs={
-                'rows': 10, 
-                'cols': 50,
-                'placeholder': 'Enter the job description here'
+                "rows": 10,
+                "cols": 50,
+                "placeholder": "Enter the job description here",
             }
-        )
+        ),
+        required=False,
     )
     job_description = forms.CharField(
-        label='Job Responsibilities',
+        label="Job Responsibilities",
         max_length=5000,
         widget=forms.Textarea(
             attrs={
-                'rows': 20, 
-                'cols': 50, 
-                'placeholder': 'Enter the role description here'
+                "rows": 20,
+                "cols": 50,
+                "placeholder": "Enter the role description here",
             }
-        )
+        ),
+        required=False,
     )
     desired_experience = forms.CharField(
-        label='Desired Experience',
+        label="Desired Experience",
         max_length=5000,
         widget=forms.Textarea(
             attrs={
-                'rows': 20, 
-                'cols': 50, 
-                'placeholder': 'Enter the job requirements here'
+                "rows": 20,
+                "cols": 50,
+                "placeholder": "Enter the job requirements here",
             }
-        )
+        ),
     )
-    include_cover_letter = forms.BooleanField(label='Include Cover Letter', required=False)
+    include_cover_letter = forms.BooleanField(
+        label="Include Cover Letter", required=False
+    )
     personal_info_specific_to_job = forms.CharField(
-        label='Added Personal Info', 
+        label="Added Personal Info",
         required=False,
         max_length=5000,
         widget=forms.Textarea(
             attrs={
-                'rows': 20, 
-                'cols': 50, 
-                'placeholder': 'Enter the personal info specific to the job here'
+                "rows": 20,
+                "cols": 50,
+                "placeholder": "Enter the personal info specific to the job here",
             }
-        )
+        ),
     )
+
+
+class SearchForm(forms.Form):
+    company_name = forms.CharField(label="Company Name", max_length=100, required=False)
+
+    def clean_company_name(self):
+        return self.cleaned_data.get("company_name", "").strip()
 
 
 # class ResumeReviewForm(forms.Form):

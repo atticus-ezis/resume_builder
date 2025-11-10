@@ -72,7 +72,9 @@
 
       <!-- download pdf button -->
       <div style="margin-top: 20px">
-        <a href="{% url 'resume_pdf_download' %}" target="_blank" class="btn">Download Resume PDF</a>
+        <button type="submit" formaction="{% url 'resume_pdf_download' %}" formtarget="_blank" class="btn">
+          Download Resume PDF
+        </button>
       </div>
 
       {% if cover_letter_content %}
@@ -87,9 +89,15 @@
 
       <div style="margin-top: 20px">
         {% if cover_letter_content %}
-        <a href="{% url 'cover_letter_pdf_download' %}" target="_blank" class="btn" style="margin-left: 10px"
-          >Download Cover Letter PDF</a
+        <button
+          type="submit"
+          formaction="{% url 'cover_letter_pdf_download' %}"
+          formtarget="_blank"
+          class="btn"
+          style="margin-left: 10px"
         >
+          Download Cover Letter PDF
+        </button>
         {% endif %}
         <a href="{% url 'build_resume' %}" style="margin-left: 10px">← Back to Form</a>
       </div>
